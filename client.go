@@ -175,14 +175,16 @@ func (c *HelmClient) AddOrUpdateChartRepo(entry repo.Entry) error {
 
 	chartRepo.CachePath = c.Settings.RepositoryCache
 
-	_, err = chartRepo.DownloadIndexFile()
-	if err != nil {
-		return err
-	}
-
 	if c.storage.Has(entry.Name) {
 		c.DebugLog("WARNING: repository name %q already exists", entry.Name)
 		return nil
+	}
+
+	if !registry.IsOCI(entry.URL) {
+		_, err = chartRepo.DownloadIndexFile()
+		if err != nil {
+			return err
+		}
 	}
 
 	c.storage.Update(&entry)
@@ -218,7 +220,7 @@ func (c *HelmClient) UpdateChartRepos() error {
 func (c *HelmClient) Login(entry *repo.Entry) error {
 	registryLogin := action.NewRegistryLogin(c.ActionConfig)
 
-	err := registryLogin.Run(os.Stdout, entry.URL, entry.Username, entry.Password, entry.InsecureSkipTLSverify)
+	err := registryLogin.Run(os.Stdout, entry.URL, entry.Username, entry.Password, entry.InsecureSkipTLSverify, c.actionConfig)
 
 	return err
 }
