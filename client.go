@@ -220,7 +220,7 @@ func (c *HelmClient) UpdateChartRepos() error {
 func (c *HelmClient) Login(entry *repo.Entry) error {
 	registryLogin := action.NewRegistryLogin(c.ActionConfig)
 
-	err := registryLogin.Run(os.Stdout, entry.URL, entry.Username, entry.Password, entry.InsecureSkipTLSverify, c.actionConfig)
+	err := registryLogin.Run(os.Stdout, entry.URL, entry.Username, entry.Password, entry.InsecureSkipTLSverify, c.ActionConfig)
 
 	return err
 }
