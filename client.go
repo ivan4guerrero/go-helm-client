@@ -219,8 +219,9 @@ func (c *HelmClient) UpdateChartRepos() error {
 // Login authenticate in private repositories
 func (c *HelmClient) Login(entry *repo.Entry) error {
 	registryLogin := action.NewRegistryLogin(c.ActionConfig)
+	registryOpts := registryLogin.WithInsecure(true)
 
-	err := registryLogin.Run(os.Stdout, entry.URL, entry.Username, entry.Password, c.ActionConfig)
+	err := registryLogin.Run(os.Stdout, entry.URL, entry.Username, entry.Password, registryOpts)
 
 	return err
 }
